@@ -13,7 +13,7 @@ export async function uploadAuctionPicture(event) {
 
   if (email !== auction.seller) {
     throw new createError.Unauthorized(
-      "You are unauthorized to perform this action."
+      "You are not authorized to perform this action."
     );
   }
 
