@@ -14,6 +14,19 @@ provider:
   iamRoleStatements:
     - ${file(iam/SendMailIAM.yml):SendMailIAM}
 
+resources:
+  Resources:
+    MailQueue: ${file(resources/MailQueue.yml):MailQueue}
+
 functions:
   sendMail:
     handler: src/handlers/sendMail.handler
+    events:
+      - sqs:
+          arn: ${self:custom.mailQueue.arn}
+          batchSize: 1
+
+custom:
+  mailQueue:
+    name: MailQueue-${self:provider.stage}
+    arn: !GetAtt MailQueue.Arn
