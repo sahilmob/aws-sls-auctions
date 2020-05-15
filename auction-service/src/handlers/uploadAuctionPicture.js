@@ -8,7 +8,15 @@ import { setAuctionPicture } from "../lib/setAuctionPicture";
 
 export async function uploadAuctionPicture(event) {
   const { id } = event.pathParameters;
+  const { email } = event.requestContext.authorizer;
   const auction = await getAuctionById(id);
+
+  if (email !== auction.seller) {
+    throw new createError.Unauthorized(
+      "You are unauthorized to perform this action."
+    );
+  }
+
   const base64 = event.body.replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(base64, "base64");
 
